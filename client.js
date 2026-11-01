@@ -282,6 +282,7 @@ window.__ModuleLoader__.load({
       const [pageIdx, setPageIdx] = useState(null);        // null while provisional
       const [total, setTotal] = useState(null);
       const [est, setEst] = useState(null);
+      const [emaUi, setEmaUi] = useState(0);
       const [pop, setPop] = useState(null);
       const [recent, setRecent] = useState(() => LS.get(REC_KEY, []));
       const [busy, setBusy] = useState(false);
@@ -405,6 +406,7 @@ window.__ModuleLoader__.load({
         let timer = 0;
         let ema = 0;
         let lastEst = 0;
+        let lastUi = 0;
         const hasIdle = typeof requestIdleCallback === 'function';
         const LOOKAHEAD = 300;
         const finish = () => {
@@ -421,10 +423,17 @@ window.__ModuleLoader__.load({
           const b = boundsRef.current;
           const cur = pageIdxRef.current;
           if (cur != null && b.length - 1 >= cur + LOOKAHEAD) { timer = setTimeout(scheduleNext, 1500); return; }
-          let budget = deadline && deadline.timeRemaining ? deadline.timeRemaining() : 6;
-          if (budget < 2) budget = 2;
-          if (ema > 6) budget = 2;
-          if (budget > 6) budget = 6;
+          const provisional = pageIdxRef.current == null;
+          let budget;
+          if (provisional) {
+            /* catch-up mode: drive hard (rAF-paced) until the page index locks */
+            budget = ema > 6 ? 8 : 20;
+          } else {
+            budget = deadline && deadline.timeRemaining ? deadline.timeRemaining() : 6;
+            if (budget < 2) budget = 2;
+            if (ema > 6) budget = 2;
+            if (budget > 6) budget = 6;
+          }
           const t0 = performance.now();
           let pushed = false;
           for (;;) {
@@ -476,19 +485,32 @@ window.__ModuleLoader__.load({
                 setEst((prev) => (prev === rounded ? prev : rounded));
               }
             }
+            if (provisional && now - lastUi >= 1000) {
+              lastUi = now;
+              setEmaUi(Math.round(ema * 10) / 10);
+            }
           }
-          scheduleNext(ema > 6 ? 3000 : 0);
+          scheduleNext();
         };
-        const scheduleNext = (slow) => {
+        const scheduleNext = () => {
           if (stop) return;
+          if (pageIdxRef.current == null) {
+            timer = requestAnimationFrame(() => step(null));
+            return;
+          }
+          const slow = ema > 6 ? 250 : 0;
           timer = hasIdle
-            ? requestIdleCallback(step, { timeout: slow ? 3000 : 1000 })
-            : setTimeout(() => step(null), slow ? 3000 : 120);
+            ? requestIdleCallback(step, { timeout: slow ? 250 : 1000 })
+            : setTimeout(() => step(null), slow ? 250 : 120);
         };
-        scheduleNext();
+        timer = requestAnimationFrame(() => step(null));
         return () => {
           stop = true;
-          if (timer) { if (hasIdle) cancelIdleCallback(timer); else clearTimeout(timer); }
+          if (timer) {
+            if (hasIdle) { try { cancelIdleCallback(timer); } catch (e) { /* ignore */ } }
+            clearTimeout(timer);
+            cancelAnimationFrame(timer);
+          }
         };
       }, [book, layoutKey]);
 
@@ -511,11 +533,35 @@ window.__ModuleLoader__.load({
       }, [view, book]);
 
       const goPrev = useCallback(() => {
-        if (pageIdx == null || pageIdx <= 0 || !measureRef.current || !book) return;
-        const target = boundsRef.current[pageIdx - 1];
-        setPageIdx(pageIdx - 1);
-        setAnchor(target);
-      }, [pageIdx, book]);
+        if (!measureRef.current || !book) return;
+        if (pageIdx != null) {
+          if (pageIdx <= 0) return;
+          setPageIdx(pageIdx - 1);
+          setAnchor(boundsRef.current[pageIdx - 1]);
+          return;
+        }
+        /* provisional (catch-up not finished): measure a backward window of
+           ~300 paragraphs to derive the previous page boundary on demand */
+        const a = anchorRef.current || (view ? view.start : null);
+        if (!a) return;
+        let W = Math.max(0, a[0] - 300);
+        for (let attempt = 0; attempt < 3; attempt++) {
+          const chain = [[W, 0]];
+          for (;;) {
+            const lastB = chain[chain.length - 1];
+            const end = measureRef.current(book.paras, lastB);
+            if (!end) break;
+            chain.push(end);
+            if (end[0] > a[0] || (end[0] === a[0] && end[1] >= a[1])) break;
+            if (chain.length > 400) break;
+          }
+          let idxCur = chain.length - 1;
+          while (idxCur > 0 && (chain[idxCur][0] > a[0] || (chain[idxCur][0] === a[0] && chain[idxCur][1] > a[1]))) idxCur--;
+          if (idxCur >= 1) { setAnchor(chain[idxCur - 1]); return; }
+          if (W === 0) return;
+          W = Math.max(0, W - 300);
+        }
+      }, [pageIdx, book, view]);
 
       const jumpPara = useCallback((idx) => {
         const b = boundsRef.current;
@@ -762,7 +808,7 @@ window.__ModuleLoader__.load({
             ? h('div', { className: 'np-empty' }, h('span', null, busy ? t('parsing') : t('loading')))
             : pageNodes),
       h('div', { className: 'np-foot' },
-        h('span', null, err && book ? err : (pageIdx == null && book ? t('resume') : '')),
+        h('span', null, err && book ? err : (pageIdx == null && book ? t('resume') + ' · ' + emaUi + 'ms' : '')),
         h('span', null, book ? (t('pageWord') + ' ' + (pageIdx == null ? '…' : pageIdx + 1) + ' / ' + totalLabel) : '')),
       h('div', { className: 'np-sizer', ref: sizerRef, 'aria-hidden': true }),
       ['n', 's', 'e', 'w', 'ne', 'nw', 'se', 'sw'].map((d) => h('div', {
