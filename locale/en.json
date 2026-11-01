@@ -1,0 +1,28 @@
+{
+  "meta": {
+    "title": "Novel Player",
+    "description": "Translucent novel reader docked at the left of the main panel: txt import, auto typography, left/right click page flipping, chapter TOC, auto paging and recent books."
+  },
+  "open": "Open novel",
+  "recent": "Recent books",
+  "toc": "Contents",
+  "fontDec": "Smaller text",
+  "fontInc": "Larger text",
+  "auto": "Auto paging",
+  "prev": "Previous page",
+  "next": "Next page",
+  "empty1": "No novel open",
+  "empty2": "Pick a .txt file, or drop one onto this panel",
+  "emptyBtn": "Choose a txt file",
+  "loading": "Paginating…",
+  "resume": "resumed",
+  "noRecent": "No recent books yet",
+  "pageWord": "Page",
+  "settings": "Appearance",
+  "opacity": "Opacity",
+  "close": "Close reader",
+  "reopen": "Novel",
+  "resetHint": "Tip: drag the top bar to move; pull edges to resize; double-click the bar to dock back.",
+  "parsing": "Parsing…",
+  "tooBig": "File too large (max 32MB)."
+}

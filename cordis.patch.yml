@@ -1,0 +1,3 @@
+- insert:
+    - id: novel-player
+      name: '@local/novel-player'

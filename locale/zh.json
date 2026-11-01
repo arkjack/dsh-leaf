@@ -1,0 +1,28 @@
+{
+  "meta": {
+    "title": "小说播放器",
+    "description": "停靠在主屏左侧的半透明小说阅读器：导入 txt、自动优化排版、点击左右半区翻页、章节目录跳转、自动翻页与最近书本记忆。"
+  },
+  "open": "打开小说",
+  "recent": "最近书本",
+  "toc": "目录",
+  "fontDec": "缩小字号",
+  "fontInc": "放大字号",
+  "auto": "自动翻页",
+  "prev": "上一页",
+  "next": "下一页",
+  "empty1": "还没有打开小说",
+  "empty2": "点击选择 txt 文件，或把 txt 拖进这个面板",
+  "emptyBtn": "选择 txt 文件",
+  "loading": "分页中…",
+  "resume": "续读",
+  "noRecent": "暂无最近书本",
+  "pageWord": "页",
+  "settings": "外观",
+  "opacity": "透明度",
+  "close": "关闭阅读器",
+  "reopen": "小说",
+  "resetHint": "提示：拖拽顶栏移动位置；拉拽边框调整大小；双击顶栏回到默认停靠。",
+  "parsing": "解析中…",
+  "tooBig": "文件过大（最大支持 32MB）。"
+}
