@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<title>dsh-leaf UI illustration</title>
+<style>
+  html,body{margin:0;height:100%;overflow:hidden;font-family:"Segoe UI","Microsoft YaHei",sans-serif;}
+  body{background:
+    radial-gradient(1200px 700px at 72% 18%, #7d5a63 0%, rgba(125,90,99,0) 60%),
+    radial-gradient(900px 600px at 30% 80%, #3d4a52 0%, rgba(61,74,82,0) 55%),
+    radial-gradient(1400px 900px at 55% 45%, #5a4a52 0%, rgba(90,74,82,0) 70%),
+    linear-gradient(160deg, #232028 0%, #2b2430 40%, #1d232a 100%);}
+  .side{position:fixed;left:0;top:0;bottom:0;width:230px;background:rgba(18,18,22,.82);border-right:1px solid rgba(255,255,255,.06);}
+  .side .row{height:34px;margin:6px 10px;border-radius:8px;background:rgba(255,255,255,.05);}
+  .side .row.act{background:rgba(232,196,178,.85);}
+  .panel{position:fixed;left:262px;top:44px;width:300px;height:500px;border-radius:12px;
+    background:color-mix(in srgb, #17181c 62%, transparent);
+    backdrop-filter:blur(18px) saturate(1.05);
+    border:1px solid rgba(255,255,255,.14);
+    box-shadow:0 8px 32px rgba(0,0,0,.28);
+    color:#e8e6e3;display:flex;flex-direction:column;font-size:15px;}
+  .bar{display:flex;gap:2px;align-items:center;padding:6px 8px 2px;color:#b9b6b0;font-size:12px;}
+  .bar span{min-width:24px;height:24px;line-height:24px;text-align:center;border-radius:6px;}
+  .bar .t{flex:1;text-align:left;color:#8b8880;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .page{flex:1;padding:10px 18px 6px;line-height:1.95;letter-spacing:.01em;overflow:hidden;}
+  .h{font-size:1.18em;font-weight:700;margin:0 0 1.1em;}
+  .p{text-indent:2em;margin:0 0 .9em;}
+  .foot{display:flex;justify-content:space-between;padding:4px 12px 8px;font-size:11px;color:#8b8880;}
+  .hint{position:fixed;left:262px;top:560px;color:rgba(232,230,227,.55);font-size:12px;}
+</style>
+</head>
+<body>
+  <div class="side">
+    <div class="row"></div><div class="row"></div><div class="row act"></div>
+    <div class="row"></div><div class="row"></div><div class="row"></div>
+  </div>
+  <div class="panel">
+    <div class="bar">
+      <span>⌸</span><span>↺</span><span>☰</span>
+      <span class="t">示例：山海驿站.txt</span>
+      <span>A-</span><span>A+</span><span>⏵</span><span>◐</span><span>✕</span>
+    </div>
+    <div class="page">
+      <div class="h">第3章 灯下故人</div>
+      <div class="p">驿站的灯昏黄，映着墙上斑驳的雨痕。</div>
+      <div class="p">旅人解下背囊，指节叩了叩柜台："一间上房，一壶热茶。"</div>
+      <div class="p">掌柜抬眼，认出了那枚旧铜牌，神色微变，却什么也没问。</div>
+      <div class="p">窗外风铃轻响，像谁在远处低声唤他的名字。</div>
+      <div class="p">他握紧茶盏，盏中倒影里，门边不知何时多了一道瘦长的身影。</div>
+    </div>
+    <div class="foot"><span></span><span>页 12 / ≈39000</span></div>
+  </div>
+  <div class="hint">← 半透明毛玻璃阅读器停靠于主屏左侧（静态示意图）</div>
+</body>
+</html>

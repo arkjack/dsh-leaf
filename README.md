@@ -49,6 +49,24 @@ dsh-leaf mounts into the DeepSeek Harness main panel as a persistent Cordis plug
 | 翻页响应 Page flip | 即时 immediate（缓存命中 cache hit） |
 | 三万页全书 30k-page book | 前瞻上限 300 页测量，工作量只随阅读进度增长 |
 
+## 截图 | Screenshots
+
+![dsh-leaf UI illustration](docs/screenshots/ui-illustration.png)
+
+*上图为静态渲染的 UI 示意图（非实时截图），展示毛玻璃半透明面板、章节排版与页码；真实使用截图欢迎通过 PR 补充。*
+*The image above is a statically rendered UI illustration (not a live screenshot); real-world screenshots are welcome via PR.*
+
+**十秒试读 | Try it in 10 seconds**：克隆仓库后，把 [`docs/demo-sample.txt`](docs/demo-sample.txt) 拖进阅读器，即可体验完整排版、翻页与目录。
+After cloning, drag [`docs/demo-sample.txt`](docs/demo-sample.txt) into the reader to experience the full typography, paging and TOC.
+
+## 兼容性 | Compatibility
+
+- 开发与测试环境 Developed & tested on：DeepSeek Harness Desktop `0.2.1-rc.2`（Cordis `4.0.5`）
+- 仅使用公开稳定扩展点 Only public, stable extension points：`shell.overlay` 与 `sidebar.footer.action` 槽位、Client 公开服务（`ctx.slots` / `ctx.locale` / 模块加载器 module loader）
+- 无第三方运行时依赖、无构建步骤 No third-party runtime dependencies, no build step
+- 若未来 Harness 大版本调整槽结构，本仓库将跟进适配并在此更新支持的版本范围
+  If a future Harness major release changes the slot topology, this repo will adapt and update the supported range here
+
 ## 安装 | Installation
 
 前置要求：已安装 DeepSeek Harness（Desktop 或 Web profile）。
@@ -97,6 +115,11 @@ dsh-leaf/
 ├── index.js            # Host half (no-op apply)
 ├── client.js           # Client half: the whole reader UI
 ├── icon.svg            # Plugin Manager icon
+├── docs/
+│   ├── demo-sample.txt         # 10-second trial book (3 chapters)
+│   ├── illustration.html       # source of the static UI illustration
+│   └── screenshots/
+│       └── ui-illustration.png # rendered UI illustration
 └── locale/
     ├── en.json         # English display + runtime strings
     └── zh.json         # Chinese display + runtime strings
