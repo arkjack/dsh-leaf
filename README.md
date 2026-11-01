@@ -91,7 +91,7 @@ Refresh the Web UI page; the reader panel appears at the left of the main screen
 | 操作 Action | 方式 How |
 | --- | --- |
 | 打开小说 Open a book | 顶栏 `⌸` 或拖拽 txt 到面板 / top-bar button or drag & drop |
-| 翻页 Flip pages | 点击阅读区左 / 右半屏，或 `←` `→` / click left or right half |
+| 翻页 Flip pages | 点击阅读区左 / 右半屏；点击阅读器取得焦点后 `Space` / `←` / `→` 亦可翻页（焦点在阅读器外时完全无效，不会劫持宿主输入） / click the left or right half; after clicking the reader, `Space` / arrows also flip pages (fully inactive while focus is outside, never hijacks host inputs) |
 | 目录 Contents | 顶栏 `☰` |
 | 字号 Font size | 顶栏 `A-` / `A+` |
 | 自动翻页 Auto paging | 顶栏 `⏵` 循环 30s → 60s → 15s → 关 |

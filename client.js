@@ -595,6 +595,7 @@ window.__ModuleLoader__.load({
 
       const onKeyDown = (e) => {
         if (e.target !== rootRef.current) return;
+        if (geo.rightbarOpen) return;
         if (e.key === 'ArrowLeft') { e.preventDefault(); goPrev(); }
         else if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); goNext(); }
       };
@@ -630,8 +631,10 @@ window.__ModuleLoader__.load({
         return idx;
       }, [book, anchor]);
 
+      const armRoot = () => { if (rootRef.current) rootRef.current.focus({ preventScroll: true }); };
       const btn = (key, glyph, onClick, extra) => h('button', Object.assign({
-        className: 'np-btn', type: 'button', title: t(key), 'aria-label': t(key), onClick,
+        className: 'np-btn', type: 'button', title: t(key), 'aria-label': t(key),
+        onClick: (e) => { onClick(e); armRoot(); },
       }, extra || {}), glyph);
 
       const autoLabel = autoSec ? autoSec + 's' : '⏵';
@@ -715,6 +718,12 @@ window.__ModuleLoader__.load({
           boxShadow: 'none',
         }),
         onClick: stop,
+        onPointerDownCapture: (e) => {
+          /* clicking anywhere in the reader arms it: take focus so Space/arrows
+             page-flip; inputs (slider) keep their own focus */
+          if (e.target.closest('input,textarea,select')) return;
+          if (rootRef.current) rootRef.current.focus({ preventScroll: true });
+        },
         onMouseDown: (e) => {
           stop(e);
           if (pop && !e.target.closest('.np-pop') && !e.target.closest('[data-pop]')) setPop(null);
@@ -770,11 +779,11 @@ window.__ModuleLoader__.load({
           h('span', null, opacity + '%')),
         h('div', { className: 'np-hint' }, t('resetHint'))) : null,
       pop === 'recent' ? h('div', { className: 'np-pop' },
-        recent.length ? recent.map((r) => h('button', { key: r.id, type: 'button', className: 'np-item', onClick: () => openRecent(r) },
+        recent.length ? recent.map((r) => h('button', { key: r.id, type: 'button', className: 'np-item', onClick: () => { openRecent(r); armRoot(); } },
           r.name, h('small', null, Math.round((r.size || 0) / 1024) + 'KB')))
           : h('div', { className: 'np-item', style: { cursor: 'default' } }, t('noRecent'))) : null,
       pop === 'toc' && book ? h('div', { className: 'np-pop' },
-        book.toc.map((c, i) => h('button', { key: c.idx, type: 'button', className: 'np-item', 'data-cur': i === curChapter ? '1' : '0', onClick: () => { jumpPara(c.idx); setPop(null); } }, c.title))) : null,
+        book.toc.map((c, i) => h('button', { key: c.idx, type: 'button', className: 'np-item', 'data-cur': i === curChapter ? '1' : '0', onClick: () => { jumpPara(c.idx); setPop(null); armRoot(); } }, c.title))) : null,
       h('input', {
         ref: fileRef, type: 'file', accept: '.txt,.text,text/plain', style: { display: 'none' },
         onChange: (e) => { openFile(e.target.files && e.target.files[0]); e.target.value = ''; },
