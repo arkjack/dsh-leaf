@@ -3,7 +3,7 @@ window.__ModuleLoader__.load({
   factory(require) {
     const React = require('react');
     const h = React.createElement;
-    const { useCallback, useEffect, useMemo, useRef, useState } = React;
+    const { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } = React;
 
     const NS = 'novel-player';
     const PREF_KEY = 'novel-player:prefs';
@@ -314,11 +314,13 @@ window.__ModuleLoader__.load({
       const effX = Math.max(0, Math.min(rawX, vw - Math.min(effW, vw)));
       const effY = Math.max(0, Math.min(rawY, vh - Math.min(effH, vh)));
 
-      /* measurer bound to current sizer geometry */
+      /* measurer bound to current sizer geometry; layout effect so the first
+         page is measured before paint (no "paginating" flash), re-bound when
+         the panel remounts (closed -> reopened) */
       const contentH = Math.max(120, effH - 74);
-      useEffect(() => {
+      useLayoutEffect(() => {
         const sizer = sizerRef.current;
-        if (!sizer) { measureRef.current = null; return; }
+        if (!sizer || closed) { measureRef.current = null; return; }
         cacheRef.current = new Map();
         const pageEl = pageRef.current;
         const H = Math.max(96, (pageEl ? pageEl.clientHeight - 16 : contentH));
@@ -329,6 +331,7 @@ window.__ModuleLoader__.load({
           const hit = cacheRef.current.get(key);
           if (hit) return hit;
           const s = sizer;
+          if (!s.isConnected) return null;
           s.textContent = '';
           const mk = (text, kind, cont) => {
             const d = document.createElement('div');
@@ -380,12 +383,12 @@ window.__ModuleLoader__.load({
           cacheRef.current.set(key, end);
           return end;
         };
-      }, [effW, fontSize, contentH]);
+      }, [effW, fontSize, contentH, closed]);
 
       const layoutKey = effW + 'x' + contentH + 'x' + fontSize;
 
-      /* current page view from anchor */
-      useEffect(() => {
+      /* current page view from anchor; layout effect => ready before paint */
+      useLayoutEffect(() => {
         if (!book || !anchor || !measureRef.current) { setView(null); return; }
         const end = measureRef.current(book.paras, anchor);
         setView(end ? { start: anchor, end } : null);
@@ -512,7 +515,7 @@ window.__ModuleLoader__.load({
             cancelAnimationFrame(timer);
           }
         };
-      }, [book, layoutKey]);
+      }, [book, layoutKey, closed]);
 
       /* Provisional page indices resolve inside the pre-pagination step (when it
          pushes the anchor boundary) and in finish()/jumpPara scans; no per-tick
