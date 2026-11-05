@@ -568,9 +568,17 @@ window.__ModuleLoader__.load({
 
       const jumpPara = useCallback((idx) => {
         const b = boundsRef.current;
+        /* exact page start already measured */
         for (let i = 0; i < b.length - 1; i++) {
           if (b[i][0] === idx && b[i][1] === 0) { setPageIdx(i); setAnchor(b[i]); return; }
         }
+        /* target sits inside the already-measured prefix: use its page */
+        for (let i = 0; i < b.length - 1; i++) {
+          if (b[i][0] <= idx && idx < b[i + 1][0]) { setPageIdx(i); setAnchor(b[i]); return; }
+        }
+        /* not measured yet: go provisional. Clearing the stale index is what
+           keeps "previous page" from snapping back to the old chapter. */
+        setPageIdx(null);
         setAnchor([idx, 0]);
       }, []);
 
