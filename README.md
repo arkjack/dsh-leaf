@@ -3,7 +3,7 @@
 *A translucent novel reader docked in the DeepSeek Harness Web UI.*
 为 DeepSeek Harness Web UI 打造的半透明小说阅读器插件。
 
-![version](https://img.shields.io/badge/version-1.0.0-blue.svg)
+![version](https://img.shields.io/badge/version-1.0.1-blue.svg)
 ![license](https://img.shields.io/badge/license-MIT-yellow.svg)
 ![deps](https://img.shields.io/badge/dependencies-zero-green.svg)
 ![platform](https://img.shields.io/badge/platform-DeepSeek%20Harness%20Web%20UI-lightgrey.svg)
@@ -61,7 +61,7 @@ After cloning, drag [`docs/demo-sample.txt`](docs/demo-sample.txt) into the read
 
 ## 兼容性 | Compatibility
 
-- 开发与测试环境 Developed & tested on：DeepSeek Harness Desktop `0.2.1-rc.2`（Cordis `4.0.5`）
+- 开发与测试环境 Developed & tested on：DeepSeek Harness Desktop `0.2.1-rc.2`（Cordis `4.0.5`）、`0.2.2-rc.3`（Cordis `4.1.0`）
 - 仅使用公开稳定扩展点 Only public, stable extension points：`shell.overlay` 与 `sidebar.footer.action` 槽位、Client 公开服务（`ctx.slots` / `ctx.locale` / 模块加载器 module loader）
 - 无第三方运行时依赖、无构建步骤 No third-party runtime dependencies, no build step
 - 若未来 Harness 大版本调整槽结构，本仓库将跟进适配并在此更新支持的版本范围
